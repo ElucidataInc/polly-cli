@@ -9,8 +9,8 @@ var public_token_header = '';
 var jwt_decode = require('jwt-decode');
 var DNS = require('dns')
 var appNames = {"FirstView": "firstview", 
-                "PollyPhi": "lcms_relative_elmaven", 
-                "QuantFit": "calibration_file_uploader_beta"};
+                "PollyPhi": "relative_lcms_elmaven", 
+                "QuantFit": "calibration"};
 
 module.exports.hello = function() {
     console.log(chalk.green.bold("Hello from the other side! :) "));
@@ -276,14 +276,17 @@ module.exports.fetchAppLicense = function(token_filename) {
 
 }
 
-module.exports.createWorkflowRequest = function (token_filename, project_id) {
+module.exports.createWorkflowRequest = function (token_filename, 
+                                                 project_id,
+                                                 workflow_name,
+                                                 workflow_id) {
     if (has_id_token(token_filename)) {
         public_token_header = read_id_token(token_filename);
     }
     var payload = {
         "workflow_details":{
-            "workflow_name": "relative_lcms_elmaven",
-            "workflow_id": 4 //get workflow id
+            "workflow_name": workflow_name,
+            "workflow_id": workflow_id
         },
         "name": "PollyPhi™ Relative LCMS El-MAVEN Untitled",
         "project_id": project_id
@@ -373,6 +376,40 @@ module.exports.getComponentId = function (token_filename) {
     var options = {
         method: 'GET',
         url: 'https://testpolly.elucidata.io/api/component',
+        headers:
+            {
+                'cache-control': 'no-cache',
+                'content-type': 'application/json',
+                'public-token': public_token_header
+            },
+        qs:
+            {
+            },
+        json: true
+    };
+
+    request(options, function (error, response, body) {
+        if (error) throw new Error(chalk.bold.red(error));
+        console.log(chalk.yellow.bgBlack.bold(`PostRun Response: `));
+        if (response.statusCode != 200) {
+            console.log(chalk.red.bold("Unable to get component IDs.",
+                                       "An unexpected error occurred.",
+                                       "Status code:"));
+            console.log(chalk.red.bold(response.statusCode));
+            return;
+        }
+        console.log(chalk.green.bold(JSON.stringify(body)));
+        return body
+    });
+}
+
+module.exports.getWorkflowId = function (token_filename) {
+    if (has_id_token(token_filename)) {
+        public_token_header = read_id_token(token_filename);
+    }
+    var options = {
+        method: 'GET',
+        url: 'https://testpolly.elucidata.io/api/wf-fe-info',
         headers:
             {
                 'cache-control': 'no-cache',
