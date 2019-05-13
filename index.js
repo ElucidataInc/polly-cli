@@ -8,6 +8,10 @@ var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
 var public_token_header = '';
 var jwt_decode = require('jwt-decode');
 var DNS = require('dns')
+var appNames = {"FirstView": "firstview", 
+                "PollyPhi": "lcms_tstpl_pvd", 
+                "QuantFit": "calibration_file_uploader_beta"};
+
 module.exports.hello = function() {
     console.log(chalk.green.bold("Hello from the other side! :) "));
 }
