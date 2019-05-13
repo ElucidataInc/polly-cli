@@ -76,8 +76,12 @@ function refreshToken(token_filename,email){
     
     var options = {
         method: 'GET',
-        url: 'https://testpolly.elucidata.io/userpool',
-        json: true
+        url: 'https://testpolly.elucidata.io/api/userpool',
+        json: true,
+        headers:
+        {
+            'cache-control': 'no-cache'
+        },
     };
 
     var cognito_client_id = "";
@@ -151,7 +155,7 @@ module.exports.authenticate = function(token_filename,email, password){
     console.log(chalk.yellow.bold("Fetching user pool..."));
     var options = {
         method: 'GET',
-        url: 'https://testpolly.elucidata.io/userpool',
+        url: 'https://testpolly.elucidata.io/api/userpool',
         json: true
     };
 
@@ -206,6 +210,68 @@ module.exports.authenticate = function(token_filename,email, password){
     return;
 }
 
+function isLicenseActive(jsonObj) {
+    licenseObj = jsonObj.organization_details.licenses;
+    licenseKeys = Object.keys(licenseObj);
+    firstLicense = licenseObj[licenseKeys[0]];
+    expireIn = firstLicense.remaining_days;
+    return (expireIn >= 0);
+}
+
+module.exports.fetchAppLicense = function(token_filename) {
+    if (has_id_token(token_filename)) {
+        public_token_header = read_id_token(token_filename);
+    }
+
+    var options = {
+        method: 'GET',
+        url: 'https://testpolly.elucidata.io/api/me',
+        headers:
+            {
+                'cache-control': 'no-cache',
+                'content-type': 'application/json',
+                'public-token': public_token_header
+            },
+        json: true
+    }
+
+    request(options, function(error, response, body) {
+        if (error) throw new Error(chalk.bold.red(error));
+        jsonString = JSON.stringify(body);
+        jsonObj = JSON.parse(jsonString);
+        var activeLicense = 0;
+        if (isLicenseActive(jsonObj)) {
+            activeLicense = 1;
+        }
+
+        var myComponents = [];
+        var myWorkflows = [];
+
+        licenseObj = jsonObj.organization_details.licenses;
+        licenseKeys = Object.keys(licenseObj);
+        firstLicense = licenseObj[licenseKeys[0]];
+        components = firstLicense.components;
+        workflows = firstLicense.workflows;
+        for(var component in components) {
+            myComponents.push(components[component].component_id)
+        }
+
+        for (var workflow in workflows) {
+            myWorkflows.push(workflows[workflow].workflow_id);
+        }
+
+        console.log("active components");
+        console.log(myComponents);
+        console.log("active workflows");
+        console.log(myWorkflows);
+        console.log("active license");
+        console.log(activeLicense);
+
+        return;
+    });
+
+}
+
 module.exports.createWorkflowRequest = function (token_filename, project_id) {
     if (has_id_token(token_filename)) {
         public_token_header = read_id_token(token_filename);
@@ -213,7 +279,7 @@ module.exports.createWorkflowRequest = function (token_filename, project_id) {
     var payload = {
         "workflow_details":{
             "workflow_name": "relative_lcms_elmaven",
-            "workflow_id": 4
+            "workflow_id": 4 //get workflow id
         },
         "name": "PollyPhi™ Relative LCMS El-MAVEN Untitled",
         "project_id": project_id
@@ -719,7 +785,7 @@ module.exports.upload_project_data = function (url, filePath) {
     request(options, function (error, response, body) {
         if (error) throw new Error(chalk.bold.red(error));
         if (response.statusCode != 200) {
-            console.log(chalk.red.bold("Unable to post project data.Status code:"));
+            console.log(chalk.red.bold("Unable to post project data. Error code: "));
             console.log(chalk.red.bold(response.statusCode));
             return;
         }
@@ -735,9 +801,6 @@ module.exports.download_project_data = function (url, filePath) {
             {
                 'x-amz-acl': 'bucket-owner-full-control',                
             },
-        // qs: {
-
-        // }
     };
 
     request(options, function (error, response, body) {
