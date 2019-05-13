@@ -9,7 +9,7 @@ var public_token_header = '';
 var jwt_decode = require('jwt-decode');
 var DNS = require('dns')
 var appNames = {"FirstView": "firstview", 
-                "PollyPhi": "lcms_tstpl_pvd", 
+                "PollyPhi": "lcms_relative_elmaven", 
                 "QuantFit": "calibration_file_uploader_beta"};
 
 module.exports.hello = function() {
@@ -360,6 +360,10 @@ module.exports.createRunRequest = function (token_filename, component_id, projec
         console.log(chalk.green.bold(JSON.stringify(body)));
         return body
     });
+}
+
+module.exports.getComponentName = function (appName) {
+    console.log("appName: " + appNames[appName]);
 }
 
 module.exports.getComponentId = function (token_filename) {
