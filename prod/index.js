@@ -20,7 +20,7 @@ module.exports.check_internet_connection = function(){
     // assuming google server will always be up.
     DNS.resolve('www.google.com', function(err) {
         if (err) {
-            console.log("No connection");
+            console.error("No Internet Connection");
         } else {
             console.log("Connected");
         }
@@ -28,7 +28,7 @@ module.exports.check_internet_connection = function(){
 }
 
 function isloggedin(){
-    console.log(chalk.red.bold("Not loggedin"));
+    console.error(chalk.red.bold("Not loggedin"));
 }
 
 
@@ -68,11 +68,11 @@ function read_id_token(token_filename){
 
 function refreshToken(token_filename,email){
     if (!email) {
-        console.log(chalk.red.bold("Email is required to refresh the token"));
+        console.error(chalk.red.bold("Email is required to refresh the token"));
         return;
     } else {
         if (!(email.includes("@"))){
-            console.log(chalk.red.bold("Please provide valid email.."));
+            console.error(chalk.red.bold("Please provide valid email.."));
             return;
             }
         }
@@ -80,7 +80,7 @@ function refreshToken(token_filename,email){
     
     var options = {
         method: 'GET',
-        url: 'https://polly.elucidata.io/api/userpool',
+        url: 'https://pollyx.elucidata.io/api/userpool',
         json: true,
         headers:
         {
@@ -116,7 +116,7 @@ function refreshToken(token_filename,email){
     
         cognitoUser.refreshSession(refresh_token_object, (err, session) => {
             if(err) {
-                console.log("error while refreshing the token.."+err);
+                console.error("error while refreshing the token.."+err);
             } 
             else{
                 write_id_token(token_filename, String(session.getIdToken().getJwtToken()));
@@ -144,22 +144,22 @@ module.exports.authenticate = function(token_filename,email, password){
         }
     }
     if (!email) {
-        console.log(chalk.red.bold("Email is required param."));
+        console.error(chalk.red.bold("Email is required param."));
         return;
     } else {
         if (!(email.includes("@"))){
-            console.log(chalk.red.bold("First param is email. Second param is password."));
+            console.error(chalk.red.bold("First param is email. Second param is password."));
             return;
             }
         }
     if (!password) {
-        console.log(chalk.red.bold("Password is required param."));
+        console.error(chalk.red.bold("Password is required param."));
         return;
     }
     console.log(chalk.yellow.bold("Fetching user pool..."));
     var options = {
         method: 'GET',
-        url: 'https://polly.elucidata.io/api/userpool',
+        url: 'https://pollyx.elucidata.io/api/userpool',
         json: true
     };
 
@@ -207,7 +207,7 @@ module.exports.authenticate = function(token_filename,email, password){
                 });
             },
             onFailure: function (result) {
-                console.log(chalk.red.bgBlack.bold('Error while logging in. Please check your credentials on the web app.'));
+                console.error(chalk.red.bgBlack.bold('Error while logging in. Please check your credentials on the web app.'));
             }
         });
     });
@@ -229,7 +229,7 @@ module.exports.fetchAppLicense = function(token_filename) {
 
     var options = {
         method: 'GET',
-        url: 'https://polly.elucidata.io/api/me',
+        url: 'https://pollyx.elucidata.io/api/me',
         headers:
             {
                 'cache-control': 'no-cache',
@@ -294,7 +294,7 @@ module.exports.createWorkflowRequest = function (token_filename,
 
     var options = {
         method: 'PUT',
-        url: 'https://polly.elucidata.io/api/wf-request',
+        url: 'https://pollyx.elucidata.io/api/wf-request',
         headers:
             {
                 'cache-control': 'no-cache',
@@ -311,8 +311,7 @@ module.exports.createWorkflowRequest = function (token_filename,
         if (error) throw new Error(chalk.bold.red(error));
         console.log(chalk.yellow.bgBlack.bold(`createWorkflowRequest Response: `));
         if ((response.statusCode != 200) && (response.statusCode != 400)) {
-            console.log(chalk.red.bold("Unable to create workflow request id. Please authenticate. Status code:"));
-            console.log(chalk.red.bold(response.statusCode));
+            console.error(chalk.red.bold("Unable to create workflow request id. Please authenticate"));
             console.log(chalk.green.bold(JSON.stringify(body)));
             return;
         }
@@ -335,7 +334,7 @@ module.exports.createRunRequest = function (token_filename, component_id, projec
     };
     var options = {
         method: 'PUT',
-        url: 'https://polly.elucidata.io/api/run',
+        url: 'https://pollyx.elucidata.io/api/run',
         headers:
             {
                 'cache-control': 'no-cache',
@@ -353,7 +352,7 @@ module.exports.createRunRequest = function (token_filename, component_id, projec
         if (error) throw new Error(chalk.bold.red(error));
         console.log(chalk.yellow.bgBlack.bold(`createRunRequest Response: `));
         if ((response.statusCode != 200) && (response.statusCode != 400)) {
-            console.log(chalk.red.bold("Unable to create run request ID.",
+            console.error(chalk.red.bold("Unable to create run request ID.",
                                        "An unexpected error occurred.",
                                        "Status code:",
                                        response.statusCode));
@@ -375,7 +374,7 @@ module.exports.getComponentId = function (token_filename) {
     }
     var options = {
         method: 'GET',
-        url: 'https://polly.elucidata.io/api/component',
+        url: 'https://pollyx.elucidata.io/api/component',
         headers:
             {
                 'cache-control': 'no-cache',
@@ -392,10 +391,8 @@ module.exports.getComponentId = function (token_filename) {
         if (error) throw new Error(chalk.bold.red(error));
         console.log(chalk.yellow.bgBlack.bold(`PostRun Response: `));
         if (response.statusCode != 200) {
-            console.log(chalk.red.bold("Unable to get component IDs.",
-                                       "An unexpected error occurred.",
-                                       "Status code:"));
-            console.log(chalk.red.bold(response.statusCode));
+            console.error(chalk.red.bold("Unable to get component IDs.",
+                                       "An unexpected error occurred."));
             return;
         }
         console.log(chalk.green.bold(JSON.stringify(body)));
@@ -409,7 +406,7 @@ module.exports.getWorkflowId = function (token_filename) {
     }
     var options = {
         method: 'GET',
-        url: 'https://polly.elucidata.io/api/wf-fe-info',
+        url: 'https://pollyx.elucidata.io/api/wf-fe-info',
         headers:
             {
                 'cache-control': 'no-cache',
@@ -426,10 +423,8 @@ module.exports.getWorkflowId = function (token_filename) {
         if (error) throw new Error(chalk.bold.red(error));
         console.log(chalk.yellow.bgBlack.bold(`PostRun Response: `));
         if (response.statusCode != 200) {
-            console.log(chalk.red.bold("Unable to get component IDs.",
-                                       "An unexpected error occurred.",
-                                       "Status code:"));
-            console.log(chalk.red.bold(response.statusCode));
+            console.error(chalk.red.bold("Unable to get component IDs.",
+                                       "An unexpected error occurred."));
             return;
         }
         console.log(chalk.green.bold(JSON.stringify(body)));
@@ -443,7 +438,7 @@ module.exports.getEndpointForRuns = function (token_filename) {
     }
     var options = {
         method: 'GET',
-        url: 'https://polly.elucidata.io/api/ui-endpoints',
+        url: 'https://pollyx.elucidata.io/api/ui-endpoints',
         headers:
             {
                 'cache-control': 'no-cache',
@@ -460,7 +455,7 @@ module.exports.getEndpointForRuns = function (token_filename) {
         if (error) throw new Error(chalk.bold.red(error));
         console.log(chalk.yellow.bgBlack.bold(`getEndpointForRun Response: `));
         if ((response.statusCode != 200) && (response.statusCode != 400)) {
-            console.log(chalk.red.bold("Unable to get UI endpoints.",
+            console.error(chalk.red.bold("Unable to get UI endpoints.",
                                        "An unexpected error occurred.",
                                        "Status code:",
                                        response.statusCode));
@@ -481,7 +476,7 @@ module.exports.createProject = function (token_filename,name) {
     }
     var options = {
         method: 'POST',
-        url: 'https://polly.elucidata.io/api/project',
+        url: 'https://pollyx.elucidata.io/api/project',
         headers:
             {
                 'cache-control': 'no-cache',
@@ -498,8 +493,7 @@ module.exports.createProject = function (token_filename,name) {
         if (error) throw new Error(chalk.bold.red(error));
         console.log(chalk.yellow.bgBlack.bold(`createProject Response: `));
         if ((response.statusCode != 200) && (response.statusCode != 400)) {
-            console.log(chalk.red.bold("Unable to create Project. Please authenticate. Status code:"));
-            console.log(chalk.red.bold(response.statusCode));
+            console.error(chalk.red.bold("Unable to create Project. Please authenticate."));
             console.log(chalk.green.bold(JSON.stringify(body)));
             return;
         }
@@ -510,20 +504,20 @@ module.exports.createProject = function (token_filename,name) {
 
 module.exports.send_email = function (user_email, email_message, redirection_url, app_name) {
     if (!user_email) {
-        console.log(chalk.red.bold("Email is required param."));
+        console.error(chalk.red.bold("Email is required param."));
         return;
     } else {
         if (!(user_email.includes("@"))){
-            console.log(chalk.red.bold("First param is email. Second param is email content. Third param is email_message. "));
+            console.error(chalk.red.bold("First param is email. Second param is email content. Third param is email_message. "));
             return;
             }
         }
     if (!redirection_url) {
-        console.log(chalk.red.bold("email_content is required param."));
+        console.error(chalk.red.bold("email_content is required param."));
         return;
     }
     if (!email_message) {
-        console.log(chalk.red.bold("email_message is required param."));
+        console.error(chalk.red.bold("email_message is required param."));
         return;
     }
     var options = {
@@ -546,8 +540,7 @@ module.exports.send_email = function (user_email, email_message, redirection_url
         if (error) throw new Error(chalk.bold.red(error));
         console.log(chalk.yellow.bgBlack.bold(`send email Response: `));
         if ((response.statusCode != 200) && (response.statusCode != 400)) {
-            console.log(chalk.red.bold("Unable to send email. Please check your APIs. Status code:"));
-            console.log(chalk.red.bold(response.statusCode));
+            console.error(chalk.red.bold("Unable to send email. Please check your APIs."));
             console.log(chalk.green.bold(JSON.stringify(body)));
             return;
         }
@@ -567,7 +560,7 @@ module.exports.shareProject = function (token_filename,project_id,permission,use
     }
     var options = {
         method: 'POST',
-        url: 'https://polly.elucidata.io/api/sharing/share_project',
+        url: 'https://pollyx.elucidata.io/api/sharing/share_project',
         headers:
             {
                 'cache-control': 'no-cache',
@@ -584,8 +577,7 @@ module.exports.shareProject = function (token_filename,project_id,permission,use
         if (error) throw new Error(chalk.bold.red(error));
         console.log(chalk.yellow.bgBlack.bold(`shareProject Response: `));
         if ((response.statusCode != 200) && (response.statusCode != 400)) {
-            console.log(chalk.red.bold("Unable to share Project. Please authenticate. Status code:"));
-            console.log(chalk.red.bold(response.statusCode));
+            console.error(chalk.red.bold("Unable to share Project. Please authenticate"));
             console.log(chalk.green.bold(JSON.stringify(body)));
             return;
         }
@@ -608,8 +600,7 @@ module.exports.uploadCuratedPeakDataToCloud = function (signed_url, filePath) {
     request(options, function (error, response, body) {
         if (error) throw new Error(chalk.bold.red(error));
         if (response.statusCode != 200) {
-            console.log(chalk.red.bold("Unable to post project data.Status code:"));
-            console.log(chalk.red.bold(response.statusCode));
+            console.error(chalk.red.bold("Unable to post project data."));
             return;
         }
         console.log(chalk.green.bold(response.statusCode));
@@ -618,7 +609,7 @@ module.exports.uploadCuratedPeakDataToCloud = function (signed_url, filePath) {
 
 module.exports.getPeakUploadUrls = function (session_indentifier,file_name) {
     if (!session_indentifier) {
-        console.log(chalk.red.bold("session_indentifier is required param."));
+        console.error(chalk.red.bold("session_indentifier is required param."));
         return;
     }
     var options = {
@@ -640,8 +631,7 @@ module.exports.getPeakUploadUrls = function (session_indentifier,file_name) {
         if (error) throw new Error(chalk.bold.red(error));
         console.log(chalk.yellow.bgBlack.bold(`getPeakUploadUrls Response: `));
         if ((response.statusCode != 200) && (response.statusCode != 400)) {
-            console.log(chalk.red.bold("Unable to get signed urls for uploading peak data. Please check your APIs. Status code:"));
-            console.log(chalk.red.bold(response.statusCode));
+            console.error(chalk.red.bold("Unable to get signed urls for uploading peak data. Please check your APIs."));
             console.log(chalk.green.bold(JSON.stringify(body)));
             return;
         }
@@ -657,7 +647,7 @@ module.exports.get_upload_Project_urls = function (token_filename,id) {
     }
     var options = {
         method: 'GET',
-        url: 'https://polly.elucidata.io/api/project',
+        url: 'https://pollyx.elucidata.io/api/project',
         headers:
             {
                 'cache-control': 'no-cache',
@@ -676,8 +666,7 @@ module.exports.get_upload_Project_urls = function (token_filename,id) {
         if (error) throw new Error(chalk.bold.red(error));
         console.log(chalk.yellow.bgBlack.bold(`PostRun Response: `));
         if (response.statusCode != 200) {
-            console.log(chalk.red.bold("Unable to get Project upload urls. Please authenticate. Status code:"));
-            console.log(chalk.red.bold(response.statusCode));
+            console.error(chalk.red.bold("Unable to get Project upload urls. Please authenticate."));
             return;
         }
         console.log(chalk.green.bold(JSON.stringify(body)));
@@ -692,7 +681,7 @@ module.exports.get_Project_names = function (token_filename) {
     }
     var options = {
         method: 'GET',
-        url: 'https://polly.elucidata.io/api/project',
+        url: 'https://pollyx.elucidata.io/api/project',
         headers:
             {
                 'cache-control': 'no-cache',
@@ -709,8 +698,7 @@ module.exports.get_Project_names = function (token_filename) {
         if (error) throw new Error(chalk.bold.red(error));
         console.log(chalk.yellow.bgBlack.bold(`PostRun Response: `));
         if (response.statusCode != 200) {
-            console.log(chalk.red.bold("Unable to get Project upload urls. Please authenticate. Status code:"));
-            console.log(chalk.red.bold(response.statusCode));
+            console.error(chalk.red.bold("Unable to get Project upload urls. Please authenticate."));
             return;
         }
         console.log(chalk.green.bold(JSON.stringify(body)));
@@ -724,7 +712,7 @@ module.exports.get_organizational_databases = function (token_filename,organizat
     }
     var options = {
         method: 'GET',
-        url: 'https://polly.elucidata.io/api/project',
+        url: 'https://pollyx.elucidata.io/api/project',
         headers:
             {
                 'cache-control': 'no-cache',
@@ -743,8 +731,7 @@ module.exports.get_organizational_databases = function (token_filename,organizat
         if (error) throw new Error(chalk.bold.red(error));
         console.log(chalk.yellow.bgBlack.bold(`PostRun Response: `));
         if (response.statusCode != 200) {
-            console.log(chalk.red.bold("Unable to get Project upload urls. Please authenticate. Status code:"));
-            console.log(chalk.red.bold(response.statusCode));
+            console.error(chalk.red.bold("Unable to get Project upload urls. Please authenticate."));
             return;
         }
         console.log(chalk.green.bold(JSON.stringify(body)));
@@ -758,7 +745,7 @@ module.exports.get_Project_files = function (token_filename,id) {
     }
     var options = {
         method: 'GET',
-        url: 'https://polly.elucidata.io/api/project',
+        url: 'https://pollyx.elucidata.io/api/project',
         headers:
             {
                 'cache-control': 'no-cache',
@@ -776,8 +763,7 @@ module.exports.get_Project_files = function (token_filename,id) {
         if (error) throw new Error(chalk.bold.red(error));
         console.log(chalk.yellow.bgBlack.bold(`PostRun Response: `));
         if (response.statusCode != 200) {
-            console.log(chalk.red.bold("Unable to get Project upload urls. Please authenticate. Status code:"));
-            console.log(chalk.red.bold(response.statusCode));
+            console.error(chalk.red.bold("Unable to get Project upload urls. Please authenticate."));
             return;
         }
         console.log(chalk.green.bold(JSON.stringify(body)));
@@ -807,8 +793,7 @@ module.exports.createPutRequest = function (token_filename,url, filePath) {
         if (error) throw new Error(chalk.bold.red(error));
         console.log(chalk.yellow.bgBlack.bold(`createPutRequest Response: `));
         if (response.statusCode != 200) {
-            console.log(chalk.red.bold("Unable to create Run. Please authenticate. Status code:"));
-            console.log(chalk.red.bold(response.statusCode));
+            console.error(chalk.red.bold("Unable to create Run. Please authenticate."));
             return;
         }
         console.log(chalk.green.bold(response.statusCode));
@@ -830,8 +815,7 @@ module.exports.upload_project_data = function (url, filePath) {
     request(options, function (error, response, body) {
         if (error) throw new Error(chalk.bold.red(error));
         if (response.statusCode != 200) {
-            console.log(chalk.red.bold("Unable to post project data. Error code: "));
-            console.log(chalk.red.bold(response.statusCode));
+            console.error(chalk.red.bold("Unable to post project data."));
             return;
         }
         console.log(chalk.green.bold(response.statusCode));
@@ -851,14 +835,13 @@ module.exports.download_project_data = function (url, filePath) {
     request(options, function (error, response, body) {
         if (error) throw new Error(chalk.bold.red(error));
         if (response.statusCode != 200) {
-            console.log(chalk.red.bold("Unable to get project data.Status code:"));
-            console.log(chalk.red.bold(response.statusCode));
+            console.error(chalk.red.bold("Unable to get project data"));
             return;
         }
         dataToWrite = response.body
         fs.writeFile(filePath, dataToWrite, 'utf8', function (err) {
             if (err) {
-              console.log('Some error occured - file either not saved or corrupted file saved.');
+              console.error('Some error occured - file either not saved or corrupted file saved.');
             } else{
               console.log('It\'s saved!');
             }
