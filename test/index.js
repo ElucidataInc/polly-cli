@@ -21,6 +21,7 @@ module.exports.check_internet_connection = function(){
     DNS.resolve('www.google.com', function(err) {
         if (err) {
             console.log("No connection");
+            console.error("Error: No connection");
         } else {
             console.log("Connected");
         }
