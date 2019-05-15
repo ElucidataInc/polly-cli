@@ -27,11 +27,6 @@ module.exports.check_internet_connection = function(){
         });
 }
 
-function isloggedin(){
-    console.error(chalk.red.bold("Not loggedin"));
-}
-
-
 function write_id_token(token_filename,idtoken) {
     var fso = require("fs");
     var buf = new Buffer(idtoken);
@@ -74,8 +69,8 @@ function refreshToken(token_filename,email){
         if (!(email.includes("@"))){
             console.error(chalk.red.bold("Please provide valid email.."));
             return;
-            }
         }
+    }
     console.log(chalk.yellow.bold("Fetching user pool to refresh token..."));
     
     var options = {
@@ -94,6 +89,12 @@ function refreshToken(token_filename,email){
 
     request(options, function (error, response, body) {
         if (error) throw new Error(chalk.bold.red(error));
+
+        if (response.statusCode != 200) {
+            console.error(response.body);
+            return;
+        }
+
         console.log(chalk.yellow.bgBlack.bold("UserPool response: "));
         cognito_client_id = body.cognito_client_id;
         cognito_user_pool = body.cognito_user_pool;
@@ -170,6 +171,12 @@ module.exports.authenticate = function(token_filename,email, password){
 
     request(options, function (error, response, body) {
         if (error) throw new Error(chalk.bold.red(error));
+
+        if (response.statusCode != 200) {
+            console.error(response.body);
+            return;
+        }
+
         console.log(chalk.yellow.bgBlack.bold("UserPool response: "));
         cognito_client_id = body.cognito_client_id;
         cognito_user_pool = body.cognito_user_pool;
@@ -229,7 +236,7 @@ module.exports.fetchAppLicense = function(token_filename) {
 
     var options = {
         method: 'GET',
-        url: 'https://testpolly.elucidata.io/api/prelogin',
+        url: 'https://testpolly.elucidata.io/api/me',
         headers:
             {
                 'cache-control': 'no-cache',
@@ -316,9 +323,8 @@ module.exports.createWorkflowRequest = function (token_filename,
     request(options, function (error, response, body) {
         if (error) throw new Error(chalk.bold.red(error));
         console.log(chalk.yellow.bgBlack.bold(`createWorkflowRequest Response: `));
-        if ((response.statusCode != 200) && (response.statusCode != 400)) {
-            console.error(chalk.red.bold("Unable to create workflow request id. Please authenticate"));
-            console.log(chalk.green.bold(JSON.stringify(body)));
+        if (response.statusCode != 200) {
+            console.error(response.body);
             return;
         }
         console.log(chalk.green.bold(JSON.stringify(body)));
@@ -357,12 +363,8 @@ module.exports.createRunRequest = function (token_filename, component_id, projec
     request(options, function (error, response, body) {
         if (error) throw new Error(chalk.bold.red(error));
         console.log(chalk.yellow.bgBlack.bold(`createRunRequest Response: `));
-        if ((response.statusCode != 200) && (response.statusCode != 400)) {
-            console.error(chalk.red.bold("Unable to create run request ID.",
-                                       "An unexpected error occurred.",
-                                       "Status code:",
-                                       response.statusCode));
-            console.log(chalk.green.bold(JSON.stringify(body)));
+        if (response.statusCode != 200) {
+            console.error(response.body);
             return;
         }
         console.log(chalk.green.bold(JSON.stringify(body)));
@@ -397,8 +399,7 @@ module.exports.getComponentId = function (token_filename) {
         if (error) throw new Error(chalk.bold.red(error));
         console.log(chalk.yellow.bgBlack.bold(`PostRun Response: `));
         if (response.statusCode != 200) {
-            console.error(chalk.red.bold("Unable to get component IDs.",
-                                       "An unexpected error occurred."));
+            console.error(response.body);
             return;
         }
         console.log(chalk.green.bold(JSON.stringify(body)));
@@ -429,8 +430,7 @@ module.exports.getWorkflowId = function (token_filename) {
         if (error) throw new Error(chalk.bold.red(error));
         console.log(chalk.yellow.bgBlack.bold(`PostRun Response: `));
         if (response.statusCode != 200) {
-            console.error(chalk.red.bold("Unable to get component IDs.",
-                                       "An unexpected error occurred."));
+            console.error(response.body);
             return;
         }
         console.log(chalk.green.bold(JSON.stringify(body)));
@@ -460,12 +460,8 @@ module.exports.getEndpointForRuns = function (token_filename) {
     request(options, function (error, response, body) {
         if (error) throw new Error(chalk.bold.red(error));
         console.log(chalk.yellow.bgBlack.bold(`getEndpointForRun Response: `));
-        if ((response.statusCode != 200) && (response.statusCode != 400)) {
-            console.error(chalk.red.bold("Unable to get UI endpoints.",
-                                       "An unexpected error occurred.",
-                                       "Status code:",
-                                       response.statusCode));
-            console.log(chalk.green.bold(JSON.stringify(body)));
+        if (response.statusCode != 200) {
+            console.error(response.body);
             return;
         }
         console.log(chalk.green.bold(JSON.stringify(body)));
@@ -498,9 +494,8 @@ module.exports.createProject = function (token_filename,name) {
     request(options, function (error, response, body) {
         if (error) throw new Error(chalk.bold.red(error));
         console.log(chalk.yellow.bgBlack.bold(`createProject Response: `));
-        if ((response.statusCode != 200) && (response.statusCode != 400)) {
-            console.error(chalk.red.bold("Unable to create Project. Please authenticate."));
-            console.log(chalk.green.bold(JSON.stringify(body)));
+        if (response.statusCode != 200) {
+            console.error(response.body);
             return;
         }
         console.log(chalk.green.bold(JSON.stringify(body)));
@@ -545,9 +540,8 @@ module.exports.send_email = function (user_email, email_message, redirection_url
     request(options, function (error, response, body) {
         if (error) throw new Error(chalk.bold.red(error));
         console.log(chalk.yellow.bgBlack.bold(`send email Response: `));
-        if ((response.statusCode != 200) && (response.statusCode != 400)) {
-            console.error(chalk.red.bold("Unable to send email. Please check your APIs."));
-            console.log(chalk.green.bold(JSON.stringify(body)));
+        if (response.statusCode != 200) {
+            console.error(response.body);
             return;
         }
         console.log(chalk.green.bold(JSON.stringify(body)));
@@ -582,9 +576,8 @@ module.exports.shareProject = function (token_filename,project_id,permission,use
     request(options, function (error, response, body) {
         if (error) throw new Error(chalk.bold.red(error));
         console.log(chalk.yellow.bgBlack.bold(`shareProject Response: `));
-        if ((response.statusCode != 200) && (response.statusCode != 400)) {
-            console.error(chalk.red.bold("Unable to share Project. Please authenticate"));
-            console.log(chalk.green.bold(JSON.stringify(body)));
+        if (response.statusCode != 200) {
+            console.error(response.body);
             return;
         }
         console.log(chalk.green.bold(JSON.stringify(body)));
@@ -606,7 +599,7 @@ module.exports.uploadCuratedPeakDataToCloud = function (signed_url, filePath) {
     request(options, function (error, response, body) {
         if (error) throw new Error(chalk.bold.red(error));
         if (response.statusCode != 200) {
-            console.error(chalk.red.bold("Unable to post project data."));
+            console.error(response.body);
             return;
         }
         console.log(chalk.green.bold(response.statusCode));
@@ -636,9 +629,8 @@ module.exports.getPeakUploadUrls = function (session_indentifier,file_name) {
     request(options, function (error, response, body) {
         if (error) throw new Error(chalk.bold.red(error));
         console.log(chalk.yellow.bgBlack.bold(`getPeakUploadUrls Response: `));
-        if ((response.statusCode != 200) && (response.statusCode != 400)) {
-            console.error(chalk.red.bold("Unable to get signed urls for uploading peak data. Please check your APIs."));
-            console.log(chalk.green.bold(JSON.stringify(body)));
+        if (response.statusCode != 200) {
+            console.error(response.body);
             return;
         }
         console.log(chalk.green.bold(JSON.stringify(body)));
@@ -672,7 +664,7 @@ module.exports.get_upload_Project_urls = function (token_filename,id) {
         if (error) throw new Error(chalk.bold.red(error));
         console.log(chalk.yellow.bgBlack.bold(`PostRun Response: `));
         if (response.statusCode != 200) {
-            console.error(chalk.red.bold("Unable to get Project upload urls. Please authenticate."));
+            console.error(response.body);
             return;
         }
         console.log(chalk.green.bold(JSON.stringify(body)));
@@ -704,7 +696,7 @@ module.exports.get_Project_names = function (token_filename) {
         if (error) throw new Error(chalk.bold.red(error));
         console.log(chalk.yellow.bgBlack.bold(`PostRun Response: `));
         if (response.statusCode != 200) {
-            console.error(chalk.red.bold("Unable to get Project upload urls. Please authenticate."));
+            console.error(response.body);
             return;
         }
         console.log(chalk.green.bold(JSON.stringify(body)));
@@ -737,7 +729,7 @@ module.exports.get_organizational_databases = function (token_filename,organizat
         if (error) throw new Error(chalk.bold.red(error));
         console.log(chalk.yellow.bgBlack.bold(`PostRun Response: `));
         if (response.statusCode != 200) {
-            console.error(chalk.red.bold("Unable to get Project upload urls. Please authenticate."));
+            console.error(response.body);
             return;
         }
         console.log(chalk.green.bold(JSON.stringify(body)));
@@ -769,7 +761,7 @@ module.exports.get_Project_files = function (token_filename,id) {
         if (error) throw new Error(chalk.bold.red(error));
         console.log(chalk.yellow.bgBlack.bold(`PostRun Response: `));
         if (response.statusCode != 200) {
-            console.error(chalk.red.bold("Unable to get Project upload urls. Please authenticate."));
+            console.error(response.body);
             return;
         }
         console.log(chalk.green.bold(JSON.stringify(body)));
@@ -799,7 +791,7 @@ module.exports.createPutRequest = function (token_filename,url, filePath) {
         if (error) throw new Error(chalk.bold.red(error));
         console.log(chalk.yellow.bgBlack.bold(`createPutRequest Response: `));
         if (response.statusCode != 200) {
-            console.error(chalk.red.bold("Unable to create Run. Please authenticate."));
+            console.error(response.body);
             return;
         }
         console.log(chalk.green.bold(response.statusCode));
@@ -821,7 +813,7 @@ module.exports.upload_project_data = function (url, filePath) {
     request(options, function (error, response, body) {
         if (error) throw new Error(chalk.bold.red(error));
         if (response.statusCode != 200) {
-            console.error(chalk.red.bold("Unable to post project data."));
+            console.error(response.body);
             return;
         }
         console.log(chalk.green.bold(response.statusCode));
@@ -841,7 +833,7 @@ module.exports.download_project_data = function (url, filePath) {
     request(options, function (error, response, body) {
         if (error) throw new Error(chalk.bold.red(error));
         if (response.statusCode != 200) {
-            console.error(chalk.red.bold("Unable to get project data"));
+            console.error(response.body);
             return;
         }
         dataToWrite = response.body
