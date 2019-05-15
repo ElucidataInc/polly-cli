@@ -236,7 +236,7 @@ module.exports.fetchAppLicense = function(token_filename) {
 
     var options = {
         method: 'GET',
-        url: 'https://testpolly.elucidata.io/api/me',
+        url: 'https://testpolly.elucidata.io/api/prelogin',
         headers:
             {
                 'cache-control': 'no-cache',
