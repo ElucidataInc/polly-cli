@@ -250,7 +250,7 @@ module.exports.fetchAppLicense = function(token_filename) {
         if (error) throw new Error(chalk.bold.red(error));
 
         if (response.statusCode != 200) {
-            console.error(response.body);
+            console.error(JSON.stringify(response.body));
             return;
         }
 
