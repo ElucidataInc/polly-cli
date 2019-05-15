@@ -244,6 +244,7 @@ module.exports.fetchAppLicense = function(token_filename) {
 
         if (response.statusCode != 200) {
             console.error(response.body);
+            return;
         }
 
         jsonString = JSON.stringify(body);
