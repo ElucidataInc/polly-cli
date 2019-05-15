@@ -229,7 +229,7 @@ module.exports.fetchAppLicense = function(token_filename) {
 
     var options = {
         method: 'GET',
-        url: 'https://testpolly.elucidata.io/api/me',
+        url: 'https://testpolly.elucidata.io/api/prelogin',
         headers:
             {
                 'cache-control': 'no-cache',
@@ -241,6 +241,11 @@ module.exports.fetchAppLicense = function(token_filename) {
 
     request(options, function(error, response, body) {
         if (error) throw new Error(chalk.bold.red(error));
+
+        if (response.statusCode != 200) {
+            console.error(response.body);
+        }
+
         jsonString = JSON.stringify(body);
         jsonObj = JSON.parse(jsonString);
         var activeLicense = 0;
