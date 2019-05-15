@@ -20,7 +20,7 @@ module.exports.check_internet_connection = function(){
     // assuming google server will always be up.
     DNS.resolve('www.google.com', function(err) {
         if (err) {
-            console.error(JSON.stringify("No Internet Connection"));
+            console.error("No Internet Connection");
         } else {
             console.log("Connected");
         }
@@ -63,11 +63,11 @@ function read_id_token(token_filename){
 
 function refreshToken(token_filename,email){
     if (!email) {
-        console.error(JSON.stringify(chalk.red.bold("Email is required to refresh the token")));
+        console.error(chalk.red.bold("Email is required to refresh the token"));
         return;
     } else {
         if (!(email.includes("@"))){
-            console.error(JSON.stringify(chalk.red.bold("Please provide valid email..")));
+            console.error(chalk.red.bold("Please provide valid email.."));
             return;
         }
     }
@@ -117,7 +117,7 @@ function refreshToken(token_filename,email){
     
         cognitoUser.refreshSession(refresh_token_object, (err, session) => {
             if(err) {
-                console.error(JSON.stringify("error while refreshing the token.."+err));
+                console.error("error while refreshing the token.."+err);
             } 
             else{
                 write_id_token(token_filename, String(session.getIdToken().getJwtToken()));
@@ -145,16 +145,16 @@ module.exports.authenticate = function(token_filename,email, password){
         }
     }
     if (!email) {
-        console.error(JSON.stringify(chalk.red.bold("Email is required param.")));
+        console.error(chalk.red.bold("Email is required param."));
         return;
     } else {
         if (!(email.includes("@"))){
-            console.error(JSON.stringify(chalk.red.bold("First param is email. Second param is password.")));
+            console.error(chalk.red.bold("First param is email. Second param is password."));
             return;
             }
         }
     if (!password) {
-        console.error(JSON.stringify(chalk.red.bold("Password is required param.")));
+        console.error(chalk.red.bold("Password is required param."));
         return;
     }
     console.log(chalk.yellow.bold("Fetching user pool..."));
@@ -214,7 +214,7 @@ module.exports.authenticate = function(token_filename,email, password){
                 });
             },
             onFailure: function (result) {
-                console.error(JSON.stringify(chalk.red.bgBlack.bold('Error while logging in. Please check your credentials on the web app.')));
+                console.error(chalk.red.bgBlack.bold('Error while logging in. Please check your credentials on the web app.'));
             }
         });
     });
@@ -505,20 +505,20 @@ module.exports.createProject = function (token_filename,name) {
 
 module.exports.send_email = function (user_email, email_message, redirection_url, app_name) {
     if (!user_email) {
-        console.error(JSON.stringify(chalk.red.bold("Email is required param.")));
+        console.error(chalk.red.bold("Email is required param."));
         return;
     } else {
         if (!(user_email.includes("@"))){
-            console.error(JSON.stringify(chalk.red.bold("First param is email. Second param is email content. Third param is email_message. ")));
+            console.error(chalk.red.bold("First param is email. Second param is email content. Third param is email_message. "));
             return;
             }
         }
     if (!redirection_url) {
-        console.error(JSON.stringify(chalk.red.bold("email_content is required param.")));
+        console.error(chalk.red.bold("email_content is required param."));
         return;
     }
     if (!email_message) {
-        console.error(JSON.stringify(chalk.red.bold("email_message is required param.")));
+        console.error(chalk.red.bold("email_message is required param."));
         return;
     }
     var options = {
@@ -608,7 +608,7 @@ module.exports.uploadCuratedPeakDataToCloud = function (signed_url, filePath) {
 
 module.exports.getPeakUploadUrls = function (session_indentifier,file_name) {
     if (!session_indentifier) {
-        console.error(JSON.stringify(chalk.red.bold("session_indentifier is required param.")));
+        console.error(chalk.red.bold("session_indentifier is required param."));
         return;
     }
     var options = {
@@ -839,7 +839,7 @@ module.exports.download_project_data = function (url, filePath) {
         dataToWrite = response.body
         fs.writeFile(filePath, dataToWrite, 'utf8', function (err) {
             if (err) {
-              console.error(JSON.stringify('Some error occured - file either not saved or corrupted file saved.'));
+              console.error('Some error occured - file either not saved or corrupted file saved.');
             } else{
               console.log('It\'s saved!');
             }
