@@ -344,7 +344,10 @@ module.exports.createRunRequest = function (token_filename, component_id, projec
             "component_id": component_id
         },
         "project_id": project_id,
-        "name": "Polly™ QuantFit Untitled"
+        "name": "Polly™ QuantFit Untitled",
+        "metadata":{
+            additional_info:"chanderprabh.jain@elucidata.io-135120052019"
+        }
     };
     var options = {
         method: 'PUT',
