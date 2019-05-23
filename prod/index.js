@@ -10,7 +10,7 @@ var jwt_decode = require('jwt-decode');
 var DNS = require('dns')
 var appNames = {"FirstView": "firstview", 
                 "PollyPhi": "relative_lcms_elmaven", 
-                "QuantFit": "calibration"};
+                "QuantFit": "calibration_file_uploader_beta"};
 
 module.exports.hello = function() {
     console.log(chalk.green.bold("Hello from the other side! :) "));
