@@ -75,7 +75,11 @@ function refreshToken(token_filename,email){
     
     var options = {
         method: 'GET',
+<<<<<<< HEAD
         url: 'https://api.testpolly.elucidata.io/userpool',
+=======
+        url: 'https://apis.testpolly.elucidata.io/userpool',
+>>>>>>> testing devpolly thermo_cd
         json: true,
         headers:
         {
@@ -160,7 +164,11 @@ module.exports.authenticate = function(token_filename,email, password){
     console.log(chalk.yellow.bold("Fetching user pool..."));
     var options = {
         method: 'GET',
+<<<<<<< HEAD
         url: 'https://api.testpolly.elucidata.io/userpool',
+=======
+        url: 'https://apis.testpolly.elucidata.io/userpool',
+>>>>>>> testing devpolly thermo_cd
         json: true
     };
 
@@ -236,7 +244,11 @@ module.exports.fetchAppLicense = function(token_filename) {
 
     var options = {
         method: 'GET',
+<<<<<<< HEAD
         url: 'https://api.testpolly.elucidata.io/me',
+=======
+        url: 'https://apis.testpolly.elucidata.io/me',
+>>>>>>> testing devpolly thermo_cd
         headers:
             {
                 'cache-control': 'no-cache',
@@ -307,7 +319,11 @@ module.exports.createWorkflowRequest = function (token_filename,
 
     var options = {
         method: 'PUT',
+<<<<<<< HEAD
         url: 'https://api.testpolly.elucidata.io/wf-request',
+=======
+        url: 'https://apis.testpolly.elucidata.io/wf-request',
+>>>>>>> testing devpolly thermo_cd
         headers:
             {
                 'cache-control': 'no-cache',
@@ -353,7 +369,11 @@ module.exports.createRunRequest = function (token_filename, component_id, projec
     console.log(payload)
     var options = {
         method: 'PUT',
+<<<<<<< HEAD
         url: 'https://api.testpolly.elucidata.io/run',
+=======
+        url: 'https://apis.testpolly.elucidata.io/run',
+>>>>>>> testing devpolly thermo_cd
         headers:
             {
                 'cache-control': 'no-cache',
@@ -389,7 +409,11 @@ module.exports.getComponentId = function (token_filename) {
     }
     var options = {
         method: 'GET',
+<<<<<<< HEAD
         url: 'https://api.testpolly.elucidata.io/component',
+=======
+        url: 'https://apis.testpolly.elucidata.io/component',
+>>>>>>> testing devpolly thermo_cd
         headers:
             {
                 'cache-control': 'no-cache',
@@ -420,7 +444,11 @@ module.exports.getWorkflowId = function (token_filename) {
     }
     var options = {
         method: 'GET',
+<<<<<<< HEAD
         url: 'https://api.testpolly.elucidata.io/wf-fe-info',
+=======
+        url: 'https://apis.testpolly.elucidata.io/wf-fe-info',
+>>>>>>> testing devpolly thermo_cd
         headers:
             {
                 'cache-control': 'no-cache',
@@ -451,7 +479,11 @@ module.exports.getEndpointForRuns = function (token_filename) {
     }
     var options = {
         method: 'GET',
+<<<<<<< HEAD
         url: 'https://api.testpolly.elucidata.io/ui-endpoints',
+=======
+        url: 'https://apis.testpolly.elucidata.io/ui-endpoints',
+>>>>>>> testing devpolly thermo_cd
         headers:
             {
                 'cache-control': 'no-cache',
@@ -485,7 +517,11 @@ module.exports.createProject = function (token_filename,name) {
     }
     var options = {
         method: 'POST',
+<<<<<<< HEAD
         url: 'https://api.testpolly.elucidata.io/project',
+=======
+        url: 'https://apis.testpolly.elucidata.io/project',
+>>>>>>> testing devpolly thermo_cd
         headers:
             {
                 'cache-control': 'no-cache',
@@ -567,7 +603,11 @@ module.exports.shareProject = function (token_filename,project_id,permission,use
     }
     var options = {
         method: 'POST',
+<<<<<<< HEAD
         url: 'https://api.testpolly.elucidata.io/sharing/share_project',
+=======
+        url: 'https://apis.testpolly.elucidata.io/sharing/share_project',
+>>>>>>> testing devpolly thermo_cd
         headers:
             {
                 'cache-control': 'no-cache',
@@ -652,7 +692,11 @@ module.exports.get_upload_Project_urls = function (token_filename,id) {
     }
     var options = {
         method: 'GET',
+<<<<<<< HEAD
         url: 'https://api.testpolly.elucidata.io/project',
+=======
+        url: 'https://apis.testpolly.elucidata.io/project',
+>>>>>>> testing devpolly thermo_cd
         headers:
             {
                 'cache-control': 'no-cache',
@@ -686,7 +730,11 @@ module.exports.get_Project_names = function (token_filename) {
     }
     var options = {
         method: 'GET',
+<<<<<<< HEAD
         url: 'https://api.testpolly.elucidata.io/project',
+=======
+        url: 'https://apis.testpolly.elucidata.io/project',
+>>>>>>> testing devpolly thermo_cd
         headers:
             {
                 'cache-control': 'no-cache',
@@ -717,7 +765,11 @@ module.exports.get_organizational_databases = function (token_filename,organizat
     }
     var options = {
         method: 'GET',
+<<<<<<< HEAD
         url: 'https://api.testpolly.elucidata.io/project',
+=======
+        url: 'https://apis.testpolly.elucidata.io/project',
+>>>>>>> testing devpolly thermo_cd
         headers:
             {
                 'cache-control': 'no-cache',
@@ -750,7 +802,11 @@ module.exports.get_Project_files = function (token_filename,id) {
     }
     var options = {
         method: 'GET',
+<<<<<<< HEAD
         url: 'https://api.testpolly.elucidata.io/project',
+=======
+        url: 'https://apis.testpolly.elucidata.io/project',
+>>>>>>> testing devpolly thermo_cd
         headers:
             {
                 'cache-control': 'no-cache',
