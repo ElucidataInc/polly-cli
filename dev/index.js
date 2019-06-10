@@ -333,6 +333,11 @@ module.exports.createWorkflowRequest = function (token_filename,
 }
 
 module.exports.createRunRequest = function (token_filename, component_id, project_id,extra_Info) {
+    console.log(component_id)
+    console.log(project_id)
+    console.log(extra_Info)
+
+
     if (has_id_token(token_filename)) {
         public_token_header = read_id_token(token_filename);
     }
@@ -349,7 +354,6 @@ module.exports.createRunRequest = function (token_filename, component_id, projec
             "additional_info":extra_Info
         }
     }
-    console.log(payload)
     var options = {
         method: 'PUT',
         url: 'https://api.devpolly.elucidata.io/run',
