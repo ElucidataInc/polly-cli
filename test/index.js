@@ -347,8 +347,7 @@ module.exports.createRunRequest = function (token_filename, component_id, projec
     };
     if(extra_Info){
         payload["metadata"]={
-            "additional_info":extra_Info,
-            "import_workflow_id":"1-chanderprabh.jain@elucidata.io-1552461097169"
+            "additional_info":extra_Info
         }
     }
     console.log(payload)
