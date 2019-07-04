@@ -332,18 +332,23 @@ module.exports.createWorkflowRequest = function (token_filename,
     });
 }
 
-module.exports.createRunRequest = function (token_filename, component_id, project_id) {
+module.exports.createRunRequest = function (token_filename, component_id, project_id,extra_Info) {
     if (has_id_token(token_filename)) {
         public_token_header = read_id_token(token_filename);
     }
     var payload = {
         "component_details":{
-            "component_name": "calibration_file_uploader_beta",
+            "component_name": "calibration",
             "component_id": component_id
         },
         "project_id": project_id,
         "name": "Polly™ QuantFit Untitled"
     };
+    if(extra_Info){
+        payload["metadata"]={
+            "additional_info":extra_Info
+        }
+    }
     var options = {
         method: 'PUT',
         url: 'https://api.devpolly.elucidata.io/run',
