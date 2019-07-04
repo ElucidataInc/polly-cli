@@ -349,7 +349,6 @@ module.exports.createRunRequest = function (token_filename, component_id, projec
             "additional_info":extra_Info
         }
     }
-    console.log(payload)
     var options = {
         method: 'PUT',
         url: 'https://api.devpolly.elucidata.io/run',
