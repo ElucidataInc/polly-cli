@@ -16,6 +16,26 @@ module.exports.hello = function() {
     console.log(chalk.green.bold("Hello from the other side! :) "));
 }
 
+// Functions used for auto classifiction -
+module.exports.autoClassify = function (featureDataFile) {
+    var options = {
+        method: 'POST',
+        url: 'https://n4h91me7ic.execute-api.ap-southeast-1.amazonaws.com/testing_ELMAVEN_peak_classification/classifypeakgroup',
+        body: fs.readFileSync(featureDataFile)
+    };
+    request(options, function (error, response, body) {
+        if (error) throw new Error(chalk.bold.red(error));
+        // console.log(chalk.yellow.bgBlack.bold(`Auto Classification result - : `));
+        if (response.statusCode != 200) {
+            console.error(JSON.stringify(response.body));
+            return;
+        }
+        console.log(chalk.green.bold(JSON.stringify(body)));
+        return body
+    });
+}
+
+
 module.exports.check_internet_connection = function(){
     // assuming google server will always be up.
     DNS.resolve('www.google.com', function(err) {
