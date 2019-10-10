@@ -599,9 +599,7 @@ module.exports.uploadCuratedPeakDataToCloud = function (signed_url, filePath) {
             {
                 'x-amz-acl': 'bucket-owner-full-control',                
             },
-        formData: {
-            file: fs.createReadStream(filePath)
-        }
+        body: fs.readFileSync(filePath)
     };
 
     request(options, function (error, response, body) {
@@ -792,9 +790,7 @@ module.exports.createPutRequest = function (token_filename,url, filePath) {
                 'content-type': 'application/x-www-form-urlencoded',
                 'public-token': public_token_header                
             },
-        formData: {
-            file: fs.createReadStream(filePath)
-        }
+        body: fs.readFileSync(filePath)
     };
 
     request(options, function (error, response, body) {
@@ -817,9 +813,7 @@ module.exports.upload_project_data = function (url, filePath) {
             {
                 'x-amz-acl': 'bucket-owner-full-control',                
             },
-        formData: {
-            file: fs.createReadStream(filePath)
-        }
+        body: fs.readFileSync(filePath)
     };
 
     request(options, function (error, response, body) {
