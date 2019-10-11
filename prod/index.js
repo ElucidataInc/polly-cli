@@ -592,8 +592,9 @@ module.exports.shareProject = function (token_filename,project_id,permission,use
 
 module.exports.uploadCuratedPeakDataToCloud = function (signed_url, filePath) {
 
+    console.log(signed_url)
     fs.createReadStream(filePath).pipe(request.put({
-        url: url,
+        url: signed_url,
         headers: {
             'x-amz-acl': 'bucket-owner-full-control',
             'content-length': fs.statSync(filePath)['size']
@@ -777,6 +778,7 @@ module.exports.createPutRequest = function (token_filename, url, filePath) {
         public_token_header = read_id_token(token_filename);
     }
 
+    console.log(url);
     fs.createReadStream(filePath).pipe(request.put({
         url: url,
         headers: {
@@ -800,6 +802,7 @@ module.exports.createPutRequest = function (token_filename, url, filePath) {
 
 module.exports.upload_project_data = function (url, filePath) {
 
+    console.log(url);
     fs.createReadStream(filePath).pipe(request.put({
         url: url,
         headers: {
