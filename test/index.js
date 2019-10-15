@@ -594,10 +594,11 @@ module.exports.shareProject = function (token_filename,project_id,permission,use
 module.exports.uploadCuratedPeakDataToCloud = function (signed_url, filePath) {
     var options = {
         url: signed_url,
-        headers: {
-            'x-amz-acl': 'bucket-owner-full-control',
-            'content-length': fs.statSync(filePath)['size']
-        }
+        headers:
+            {
+                'x-amz-acl': 'bucket-owner-full-control',
+                'content-length': fs.statSync(filePath)['size']
+            }
     };
 
     fs.createReadStream(filePath).pipe(request.put(options, function (error, response, body) {
@@ -781,13 +782,14 @@ module.exports.createPutRequest = function (token_filename, url, filePath) {
 
     var options = {
         url: url,
-        headers: {
-            'cache-control': 'no-cache',
-            'x-amz-acl': 'bucket-owner-full-control',
-            'content-type': 'application/x-www-form-urlencoded',
-            'public-token': public_token_header,
-            'content-length': fs.statSync(filePath)['size']
-        }
+        headers:
+            {
+                'cache-control': 'no-cache',
+                'x-amz-acl': 'bucket-owner-full-control',
+                'content-type': 'application/x-www-form-urlencoded',
+                'public-token': public_token_header,
+                'content-length': fs.statSync(filePath)['size']
+            }
     };
 
     fs.createReadStream(filePath).pipe(request.put(options, function (error, response, body) {
@@ -806,10 +808,11 @@ module.exports.upload_project_data = function (url, filePath) {
 
     var options = {
         url: url,
-        headers: {
-            'x-amz-acl': 'bucket-owner-full-control',
-            'content-length': fs.statSync(filePath)['size']
-        }
+        headers:
+            {
+                'x-amz-acl': 'bucket-owner-full-control',
+                'content-length': fs.statSync(filePath)['size']
+            }
     };
 
     fs.createReadStream(filePath).pipe(request.put(options, function (error, response, body) {
