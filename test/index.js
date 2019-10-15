@@ -592,13 +592,15 @@ module.exports.shareProject = function (token_filename,project_id,permission,use
 }
 
 module.exports.uploadCuratedPeakDataToCloud = function (signed_url, filePath) {
-    fs.createReadStream(filePath).pipe(request.put({
-        url: url,
+    var options = {
+        url: signed_url,
         headers: {
             'x-amz-acl': 'bucket-owner-full-control',
             'content-length': fs.statSync(filePath)['size']
         }
-    }, function (error, response, body) {
+    };
+
+    fs.createReadStream(filePath).pipe(request.put(options, function (error, response, body) {
         if (error) throw new Error(chalk.bold.red(error));
         if (response.statusCode != 200) {
             console.error(JSON.stringify(response.body));
@@ -772,12 +774,12 @@ module.exports.get_Project_files = function (token_filename,id) {
 }
 
 
-module.exports.createPutRequest = function (token_filename,url, filePath) {
+module.exports.createPutRequest = function (token_filename, url, filePath) {
     if (has_id_token(token_filename)) {
         public_token_header = read_id_token(token_filename);
     }
 
-    fs.createReadStream(filePath).pipe(request.put({
+    var options = {
         url: url,
         headers: {
             'cache-control': 'no-cache',
@@ -786,7 +788,9 @@ module.exports.createPutRequest = function (token_filename,url, filePath) {
             'public-token': public_token_header,
             'content-length': fs.statSync(filePath)['size']
         }
-    }, function (error, response, body) {
+    };
+
+    fs.createReadStream(filePath).pipe(request.put(options, function (error, response, body) {
         if (error) throw new Error(chalk.bold.red(error));
         console.log(chalk.yellow.bgBlack.bold(`createPutRequest Response: `));
         if (response.statusCode != 200) {
@@ -799,13 +803,16 @@ module.exports.createPutRequest = function (token_filename,url, filePath) {
 
 
 module.exports.upload_project_data = function (url, filePath) {
-    fs.createReadStream(filePath).pipe(request.put({
+
+    var options = {
         url: url,
         headers: {
             'x-amz-acl': 'bucket-owner-full-control',
             'content-length': fs.statSync(filePath)['size']
         }
-    }, function (error, response, body) {
+    };
+
+    fs.createReadStream(filePath).pipe(request.put(options, function (error, response, body) {
         if (error) throw new Error(chalk.bold.red(error));
         if (response.statusCode != 200) {
             console.error(JSON.stringify(response.body));
