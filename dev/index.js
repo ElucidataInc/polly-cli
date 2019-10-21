@@ -592,23 +592,22 @@ module.exports.shareProject = function (token_filename,project_id,permission,use
 
 module.exports.uploadCuratedPeakDataToCloud = function (signed_url, filePath) {
     var options = {
-        method: 'PUT',
         url: signed_url,
         headers:
             {
-                'x-amz-acl': 'bucket-owner-full-control',                
-            },
-        body: fs.readFileSync(filePath)
+                'x-amz-acl': 'bucket-owner-full-control',
+                'content-length': fs.statSync(filePath)['size']
+            }
     };
 
-    request(options, function (error, response, body) {
+    fs.createReadStream(filePath).pipe(request.put(options, function (error, response, body) {
         if (error) throw new Error(chalk.bold.red(error));
         if (response.statusCode != 200) {
             console.error(JSON.stringify(response.body));
             return;
         }
         console.log(chalk.green.bold(response.statusCode));
-    });
+    }));
 }
 
 module.exports.getPeakUploadUrls = function (session_indentifier,file_name) {
@@ -775,24 +774,24 @@ module.exports.get_Project_files = function (token_filename,id) {
 }
 
 
-module.exports.createPutRequest = function (token_filename,url, filePath) {
+module.exports.createPutRequest = function (token_filename, url, filePath) {
     if (has_id_token(token_filename)) {
         public_token_header = read_id_token(token_filename);
     }
+
     var options = {
-        method: 'PUT',
         url: url,
         headers:
             {
                 'cache-control': 'no-cache',
                 'x-amz-acl': 'bucket-owner-full-control',
                 'content-type': 'application/x-www-form-urlencoded',
-                'public-token': public_token_header                
-            },
-        body: fs.readFileSync(filePath)
+                'public-token': public_token_header,
+                'content-length': fs.statSync(filePath)['size']
+            }
     };
 
-    request(options, function (error, response, body) {
+    fs.createReadStream(filePath).pipe(request.put(options, function (error, response, body) {
         if (error) throw new Error(chalk.bold.red(error));
         console.log(chalk.yellow.bgBlack.bold(`createPutRequest Response: `));
         if (response.statusCode != 200) {
@@ -800,29 +799,29 @@ module.exports.createPutRequest = function (token_filename,url, filePath) {
             return;
         }
         console.log(chalk.green.bold(response.statusCode));
-    });
+    }));
 }
 
 
 module.exports.upload_project_data = function (url, filePath) {
+
     var options = {
-        method: 'PUT',
         url: url,
         headers:
             {
-                'x-amz-acl': 'bucket-owner-full-control',                
-            },
-        body: fs.readFileSync(filePath)
+                'x-amz-acl': 'bucket-owner-full-control',
+                'content-length': fs.statSync(filePath)['size']
+            }
     };
 
-    request(options, function (error, response, body) {
+    fs.createReadStream(filePath).pipe(request.put(options, function (error, response, body) {
         if (error) throw new Error(chalk.bold.red(error));
         if (response.statusCode != 200) {
             console.error(JSON.stringify(response.body));
             return;
         }
         console.log(chalk.green.bold(response.statusCode));
-    });
+    }));
 }
 
 module.exports.download_project_data = function (url, filePath) {
