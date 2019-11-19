@@ -278,9 +278,9 @@ module.exports.fetchAppLicense = function(token_filename) {
         }
 
         console.log("active components");
-        console.log(myComponents);
+        console.log(JSON.stringify(myComponents));
         console.log("active workflows");
-        console.log(myWorkflows);
+        console.log(JSON.stringify(myWorkflows));
         console.log("active license");
         console.log(activeLicense);
 
