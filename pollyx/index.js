@@ -509,6 +509,11 @@ module.exports.createProject = function (token_filename,name) {
 }
 
 module.exports.send_email = function (user_email, email_message, redirection_url, app_name) {
+    console.log("-------------REDIRECTION URL----------------")
+    console.log(redirection_url)
+    console.log("-------------APP NAME----------------")
+    console.log(app_name)
+
     if (!user_email) {
         console.error(chalk.red.bold("Email is required param."));
         return;
