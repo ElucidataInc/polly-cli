@@ -324,6 +324,7 @@ module.exports.createWorkflowRequest = function (token_filename,
         if (error) throw new Error(chalk.bold.red(error));
         console.log(chalk.yellow.bgBlack.bold(`createWorkflowRequest Response: `));
         if (response.statusCode != 200) {
+            console.error(JSON.stringify(response.statusCode))
             console.error(JSON.stringify(response.body));
             return;
         }
