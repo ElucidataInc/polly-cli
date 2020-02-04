@@ -676,6 +676,9 @@ module.exports.get_upload_Project_urls = function (token_filename,id) {
     });
 }
 
+module.exports.getProjectUrl = function (projectId) {
+    return "https://polly.elucidata.io/main#project=" + projectId;
+}
 
 module.exports.get_Project_names = function (token_filename) {
     if (has_id_token(token_filename)) {
