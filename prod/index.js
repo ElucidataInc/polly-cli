@@ -18,8 +18,8 @@ module.exports.hello = function() {
 
 module.exports.check_internet_connection = function(){
     // assuming google server will always be up.
-    DNS.resolve('www.google.com', function(err) {
-        if (err) {
+    DNS.lookup('www.google.com', function(err) {
+        if (err && err.code == "ENOTFOUND") {
             console.error("No Internet Connection");
         } else {
             console.log("Connected");
