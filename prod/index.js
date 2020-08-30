@@ -8,7 +8,9 @@ var AWS_peakML = require('aws-sdk');
 var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
 var public_token_header = '';
 var jwt_decode = require('jwt-decode');
-var DNS = require('dns')
+var DNS = require('dns');
+const { url } = require('inspector');
+const { connected } = require('process');
 var appNames = {"FirstView": "firstview", 
                 "PollyPhi": "relative_lcms_elmaven", 
                 "QuantFit": "calibration_file_uploader_beta"};
@@ -753,12 +755,10 @@ module.exports.get_organizational_databases = function (token_filename,organizat
 
     request(options, function (error, response, body) {
         if (error) throw new Error(chalk.bold.red(error));
-        console.log(chalk.yellow.bgBlack.bold(`PostRun Response: `));
         if (response.statusCode != 200) {
             console.error(JSON.stringify(response.body));
             return;
         }
-        console.log(chalk.green.bold(JSON.stringify(body)));
         return body
     });
 }
@@ -874,30 +874,31 @@ module.exports.download_project_data = function (url, filePath) {
     });
 }
 
-module.exports.downloadFilesForPeakML = function (fileName, outputPath) {  
-   
-    var _0x9be0=["\x75\x73\x2D\x65\x61\x73\x74\x2D\x32\x3A\x39\x31\x34\x30\x62\x39\x38\x30\x2D\x65\x39\x66\x30\x2D\x34\x31\x30\x33\x2D\x62\x30\x31\x65\x2D\x63\x38\x38\x64\x65\x38\x31\x64\x38\x39\x39\x36"];
-    var identityPool=_0x9be0[0];
-    AWS_peakML.config.region = 'us-east-2'; // Region
-    AWS_peakML.config.credentials = new AWS.CognitoIdentityCredentials({
-       IdentityPoolId: identityPool
+module.exports.downloadFilesForPeakML = function (filename, cookie_file) {
+    var urlWithFile = 'https://v2.api.polly.elucidata.io/elmavBinaryFiles?fileName=' + filename;
+    var options = {
+        method: 'GET',
+        url: urlWithFile,
+        headers:
+            {
+                'content-type': 'application/vnd.api+json',
+                'cookie': cookie_file
+            },
+        json: true,
+    };
+    
+    request(options, function (error, response, body) {
+        if (error) { 
+            throw new Error(chalk.bold.red(error)); 
+        }
+        console.log(chalk.yellow.bgBlack.bold(`PostRun Response: `));
+        if (response.statusCode != 200) {
+            console.error(JSON.stringify(response.body));
+            return;
+        }
+        console.log(chalk.green.bold(JSON.stringify(body)));
+        return body
     });
-   
-    try {
-        var params = {
-            Bucket : "kyah",
-            Key : fileName
-        };
-        var file = require('fs').createWriteStream(outputPath);
-        return new Promise(function (resolve, reject) {
-            resolve(new AWS_peakML.S3({
-                apiVersion: '2006-03-01'
-            }).getObject(params).createReadStream().pipe(file));
-        });
-        
-    } catch (error) {
-        console.error("Error while doing", error);
-    }
 }
 
 require('make-runnable/custom')({
