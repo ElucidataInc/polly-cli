@@ -875,7 +875,7 @@ module.exports.download_project_data = function (url, filePath) {
 }
 
 module.exports.downloadFilesForPeakML = function (filename, cookie_file) {
-    var urlWithFile = 'https://v2.api.polly.elucidata.io/elmavBinaryFiles?file_name=' + filename;
+    var urlWithFile = 'https://v2.api.polly.elucidata.io/elmav-binary-files?file_name=' + filename;
     var options = {
         method: 'GET',
         url: urlWithFile,
