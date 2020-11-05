@@ -4,13 +4,10 @@ var chalk = require('chalk');
 var fs = require("fs");
 var request = require("request");
 var AWS = require('aws-sdk');
-var AWS_peakML = require('aws-sdk');
 var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
 var public_token_header = '';
 var jwt_decode = require('jwt-decode');
 var DNS = require('dns');
-const { url } = require('inspector');
-const { connected } = require('process');
 var appNames = {"FirstView": "firstview", 
                 "PollyPhi": "relative_lcms_elmaven", 
                 "QuantFit": "calibration_file_uploader_beta"};
@@ -755,10 +752,12 @@ module.exports.get_organizational_databases = function (token_filename,organizat
 
     request(options, function (error, response, body) {
         if (error) throw new Error(chalk.bold.red(error));
+        console.log(chalk.yellow.bgBlack.bold(`PostRun Response: `));
         if (response.statusCode != 200) {
             console.error(JSON.stringify(response.body));
             return;
         }
+        console.log(chalk.green.bold(JSON.stringify(body)));
         return body
     });
 }
@@ -876,6 +875,33 @@ module.exports.download_project_data = function (url, filePath) {
 
 module.exports.downloadFilesForPeakML = function (filename, cookie_file) {
     var urlWithFile = 'https://v2.api.polly.elucidata.io/elmav-binary-files?file_name=' + filename;
+    var options = {
+        method: 'GET',
+        url: urlWithFile,
+        headers:
+            {
+                'content-type': 'application/vnd.api+json',
+                'cookie': cookie_file
+            },
+        json: true,
+    };
+    
+    request(options, function (error, response, body) {
+        if (error) { 
+            throw new Error(chalk.bold.red(error)); 
+        }
+        console.log(chalk.yellow.bgBlack.bold(`PostRun Response: `));
+        if (response.statusCode != 200) {
+            console.error(JSON.stringify(response.body));
+            return;
+        }
+        console.log(chalk.green.bold(JSON.stringify(body)));
+        return body
+    });
+}
+
+module.exports.listBucketObjects = function (cookie_file) {
+    var urlWithFile = 'https://v2.api.polly.elucidata.io/elmav-binary-files/user-model-files';
     var options = {
         method: 'GET',
         url: urlWithFile,
