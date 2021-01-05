@@ -7,7 +7,7 @@ var AWS = require('aws-sdk');
 var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
 var public_token_header = '';
 var jwt_decode = require('jwt-decode');
-var DNS = require('dns')
+var DNS = require('dns');
 var appNames = {"FirstView": "firstview", 
                 "PollyPhi": "relative_lcms_elmaven", 
                 "QuantFit": "calibration"};
@@ -128,7 +128,7 @@ function refreshToken(token_filename,email){
     });
 }
 
-module.exports.authenticate = function(token_filename,email, password){
+module.exports.authenticate = function(token_filename,email, password, cookie_file){
     if (has_id_token(token_filename) && has_id_token(token_filename+"_refreshToken")) {
         var public_token_header = read_id_token(token_filename);
         var decoded = jwt_decode(String(public_token_header));
@@ -205,7 +205,8 @@ module.exports.authenticate = function(token_filename,email, password){
                 write_id_token(token_filename,String(result.getIdToken().getJwtToken()));
                 AWS.config.region = cognito_user_pool_region;
                 write_id_token(token_filename+"_refreshToken",String(result.getRefreshToken().getToken()))
-            
+                write_cookie(cookie_file, String(result.getIdToken().getJwtToken()), String(result.getRefreshToken().getToken()))
+
                 AWS.config.credentials = new AWS.CognitoIdentityCredentials({
                     IdentityPoolId : cognito_client_id,
                     Logins : {
@@ -219,6 +220,22 @@ module.exports.authenticate = function(token_filename,email, password){
         });
     });
     return;
+}
+
+function write_cookie(cookie_file, publicToken, refreshTokenId) {
+    const cookie = {
+        idToken: publicToken, 
+        refreshToken:  refreshTokenId
+    }
+
+    const jsonString = JSON.stringify(cookie)
+    fs.writeFile(cookie_file, jsonString, err => {
+        if (err) {
+            console.log('Error writing file', err)
+        } else {
+            console.log('Successfully wrote file')
+        }
+    })
 }
 
 function isLicenseActive(jsonObj) {
