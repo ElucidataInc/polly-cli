@@ -952,6 +952,33 @@ module.exports.listBucketObjects = function (cookie_file) {
     });
 }
 
+module.exports.fetchModels = function (cookie_file) {
+    var urlWithFile = 'https://v2.api.polly.elucidata.io/peakml-models';
+    var options = {
+        method: 'GET',
+        url: urlWithFile,
+        headers:
+            {
+                'content-type': 'application/vnd.api+json',
+                'cookie': cookie_file
+            },
+        json: true,
+    };
+    
+    request(options, function (error, response, body) {
+        if (error) { 
+            throw new Error(chalk.bold.red(error)); 
+        }
+        console.log(chalk.yellow.bgBlack.bold(`PostRun Response: `));
+        if (response.statusCode != 200) {
+            console.error(JSON.stringify(response.body));
+            return;
+        }
+        console.log(chalk.green.bold(JSON.stringify(body)));
+        return body
+    });
+}
+
 require('make-runnable/custom')({
     printOutputFrame: false
 })
