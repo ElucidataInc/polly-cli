@@ -1006,6 +1006,34 @@ module.exports.downloadPeakMLModel = function (model_id, cookie_file) {
     });
 }
 
+module.exports.downloadPeakMLBinary = function (type, os, cookie_file) {
+    var urlWithFile = 'https://v2.api.testpolly.elucidata.io/peakml-static?type=' + type + '&os=' + os;
+    
+    var options = {
+        method: 'GET',
+        url: urlWithFile,
+        headers:
+            {
+                'content-type': 'application/vnd.api+json',
+                'cookie': cookie_file
+            },
+        json: true,
+    };
+    
+    request(options, function (error, response, body) {
+        if (error) { 
+            throw new Error(chalk.bold.red(error)); 
+        }
+        console.log(chalk.yellow.bgBlack.bold(`PostRun Response: `));
+        if (response.statusCode != 200) {
+            console.error(JSON.stringify(response.body));
+            return;
+        }
+        console.log(chalk.green.bold(JSON.stringify(body)));
+        return body
+    });
+}
+
 require('make-runnable/custom')({
     printOutputFrame: false
 })
