@@ -712,6 +712,31 @@ module.exports.get_Project_names = function (token_filename) {
     });
 }
 
+module.exports.getProjectNamesV2 = function (cookie, next) {
+    var url = 'https://v2.api.testpolly.elucidata.io' + next;
+    var options = {
+        method: 'GET',
+        url: url,
+        headers:
+            {
+                'content-type': 'application/vnd.api+json',
+                'cookie': cookie                
+            },
+        json: true
+    };
+
+    request(options, function (error, response, body) {
+        if (error) throw new Error(chalk.bold.red(error));
+        console.log(chalk.yellow.bgBlack.bold(`PostRun Response: `));
+        if (response.statusCode != 200) {
+            console.error(JSON.stringify(response.body));
+            return;
+        }
+        console.log(chalk.green.bold(JSON.stringify(body)));
+        return body
+    });
+}
+
 module.exports.get_organizational_databases = function (token_filename,organization) {
     if (has_id_token(token_filename)) {
         public_token_header = read_id_token(token_filename);
